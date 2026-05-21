@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.sap.capire</groupId>
+    <artifactId>bookshop</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>bookshop-srv</artifactId>
+  <packaging>jar</packaging>
+  <name>bookshop-srv</name>
+
+  <dependencies>
+    <!-- CAP Cloud Foundry starter: bundles OData v4, JDBC/HANA, XSUAA, CF env -->
+    <dependency>
+      <groupId>com.sap.cds</groupId>
+      <artifactId>cds-starter-cloudfoundry</artifactId>
+    </dependency>
+
+    <!-- Spring Boot starter bundle for CAP -->
+    <dependency>
+      <groupId>com.sap.cds</groupId>
+      <artifactId>cds-starter-spring-boot-odata</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <!-- Spring Boot: produces the executable fat jar -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- CDS Maven plugin: installs cds-dk, builds the model, generates POJOs -->
+      <plugin>
+        <groupId>com.sap.cds</groupId>
+        <artifactId>cds-maven-plugin</artifactId>
+        <version>${cds.services.version}</version>
+        <executions>
+          <execution>
+            <id>cds.install-cdsdk</id>
+            <goals>
+              <goal>install-cdsdk</goal>
+            </goals>
+            <configuration>
+              <version>${cds.install-cdsdk.version}</version>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cds.build</id>
+            <goals>
+              <goal>cds</goal>
+            </goals>
+            <configuration>
+              <commands>
+                <command>build --for java</command>
+              </commands>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cds.generate</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <basePackage>com.sap.capire.bookshop.gen</basePackage>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

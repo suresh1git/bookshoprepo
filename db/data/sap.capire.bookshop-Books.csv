@@ -1,0 +1,6 @@
+ID,title,author_ID,genre_ID,stock,price,currency_code
+201,Wuthering Heights,101,11,12,11.11,GBP
+207,Jane Eyre,107,11,11,12.34,GBP
+251,The Raven,150,16,333,13.13,USD
+252,Eleonora,150,16,555,14.14,USD
+271,Catweazle,170,13,22,150.00,GBP

@@ -1,0 +1,16 @@
+# Maven
+target/
+# CDS generated artifacts (regenerated during build)
+gen/
+db/src/gen/
+srv/src/main/resources/edmx/
+# Node
+node_modules/
+# MTA
+*.mtar
+mta_archives/
+.mtar/
+# local
+*.db
+.env
+*.log

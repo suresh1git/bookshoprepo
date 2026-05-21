@@ -1,0 +1,11 @@
+{
+  "name": "bookshop-db",
+  "version": "1.0.0",
+  "description": "HANA HDI deployer for the bookshop CAP service",
+  "dependencies": {
+    "@sap/hdi-deploy": "^5"
+  },
+  "scripts": {
+    "start": "node node_modules/@sap/hdi-deploy/deploy.js"
+  }
+}

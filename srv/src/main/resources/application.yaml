@@ -1,0 +1,11 @@
+---
+spring:
+  config.activate.on-profile: default
+cds:
+  index-page.enabled: true
+
+---
+spring:
+  config.activate.on-profile: cloud
+cds:
+  index-page.enabled: false

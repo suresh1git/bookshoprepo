@@ -1,0 +1,71 @@
+_schema-version: '3.3'
+ID: bookshop
+version: 1.0.0
+description: "A CAP Java sample service (OData v4) with SAP HANA Cloud"
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        # cds-maven-plugin (in srv/pom.xml) runs 'cds build' during the Maven
+        # build, generating HANA artifacts into db/src/gen and Java sources.
+        - npx -p @sap/cds-dk cds build --production
+        - mvn -B clean package -DskipTests
+
+modules:
+  # ---------------------------------------------------------------------------
+  # CAP Java service (Spring Boot fat jar), runs on the SAP Java buildpack
+  # ---------------------------------------------------------------------------
+  - name: bookshop-srv
+    type: java
+    path: srv
+    parameters:
+      buildpack: sap_java_buildpack_jakarta
+      memory: 1024M
+      stack: cflinuxfs4
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ version: 21.+ }'
+    build-parameters:
+      builder: custom
+      commands: []
+      build-result: srv/target/bookshop-srv.jar
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: bookshop-db
+      - name: bookshop-auth
+
+  # ---------------------------------------------------------------------------
+  # HANA HDI content deployer (creates tables/views + loads CSV data)
+  # ---------------------------------------------------------------------------
+  - name: bookshop-db-deployer
+    type: hdb
+    path: db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: bookshop-db
+
+resources:
+  # SAP HANA Cloud HDI container
+  - name: bookshop-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  # XSUAA for authentication (the /admin service requires authenticated users)
+  - name: bookshop-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: bookshop-${org}-${space}
+        tenant-mode: dedicated

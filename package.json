@@ -1,0 +1,53 @@
+{
+  "name": "bookshop",
+  "version": "1.0.0",
+  "description": "A CAP Java sample (OData v4, HANA) deployable as an MTA.",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^9"
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^9"
+  },
+  "scripts": {
+    "build": "mvn clean package"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "hana-cloud"
+      },
+      "[production]": {
+        "db": "hana",
+        "auth": "xsuaa"
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    },
+    "build": {
+      "tasks": [
+        {
+          "for": "hana",
+          "src": "db",
+          "options": {
+            "model": [
+              "db",
+              "srv"
+            ]
+          }
+        },
+        {
+          "for": "java",
+          "src": "srv",
+          "options": {
+            "model": [
+              "db",
+              "srv"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
