@@ -29,7 +29,7 @@ public class CatalogServiceHandler implements EventHandler {
     private static final String BOOKS = "sap.capire.bookshop.Books";
 
     @On(event = "submitOrder")
-    public void onSubmitOrder(com.sap.cds.services.handler.EventContext context) {
+    public void onSubmitOrder(com.sap.cds.services.EventContext context) {
         CqnService service = (CqnService) context.getService();
 
         Map<String, Object> params = context.get("params") instanceof Map
